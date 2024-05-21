@@ -54,6 +54,7 @@ void PointCloudMapping::shutdown()
         keyFrameUpdated.notify_one();
     }
     viewerThread->join();
+    save();
 }
 
 void PointCloudMapping::Clear()
@@ -64,19 +65,19 @@ void PointCloudMapping::Clear()
 }
 void PointCloudMapping::insertKeyFrame(KeyFrame *kf, cv::Mat &color, cv::Mat &depth, int idk, vector<KeyFrame *> vpKFs)
 {
-    // cout << "receive a keyframe, 第" << kf->mnId << "个" << endl;
-    // if (color.empty())
-    //     return;
-    // unique_lock<mutex> lck(keyframeMutex);
-    // keyframes.push_back(kf);
-    // currentvpKFs = vpKFs;
-    // PointCloude pointcloude;
-    // pointcloude.pcID = idk;
-    // pointcloude.T = ORB_SLAM3::Converter::toSE3Quat(kf->GetPose());
-    // pointcloude.pcE = generatePointCloud(kf, color, depth);
-    // kf->mptrPointCloud = pointcloude.pcE;
-    // pointcloud.push_back(pointcloude);
-    // keyFrameUpdated.notify_one();
+     cout << "receive a keyframe, 第" << kf->mnId << "个" << endl;
+     if (color.empty())
+        return;
+     unique_lock<mutex> lck(keyframeMutex);
+     keyframes.push_back(kf);
+     currentvpKFs = vpKFs;
+     //PointCloude pointcloude;
+     //pointcloude.pcID = idk;
+     //pointcloude.T = ORB_SLAM3::Converter::toSE3Quat(kf->GetPose());
+     //pointcloude.pcE = generatePointCloud(kf);
+     //kf->mptrPointCloud = pointcloude.pcE;
+     //pointcloud.push_back(pointcloude);
+     keyFrameUpdated.notify_one();
 }
 
 void PointCloudMapping::insertKeyFrame(KeyFrame *kf)
@@ -107,9 +108,9 @@ void PointCloudMapping::generatePointCloud(KeyFrame *kf) //,Eigen::Isometry3d T
             p.x = (n - kf->cx) * p.z / kf->fx;
             p.y = (m - kf->cy) * p.z / kf->fy;
 
-            p.b = kf->imLeftRgb.ptr<uchar>(m)[n * 3];
+            p.b = kf->imLeftRgb.ptr<uchar>(m)[n * 3 + 2];
             p.g = kf->imLeftRgb.ptr<uchar>(m)[n * 3 + 1];
-            p.r = kf->imLeftRgb.ptr<uchar>(m)[n * 3 + 2];
+            p.r = kf->imLeftRgb.ptr<uchar>(m)[n * 3 ];
 
             pPointCloud->points.push_back(p);
         }
@@ -122,7 +123,7 @@ void PointCloudMapping::generatePointCloud(KeyFrame *kf) //,Eigen::Isometry3d T
 
 void PointCloudMapping::viewer()
 {
-    pcl::visualization::CloudViewer viewer("viewer");
+    pcl::visualization::CloudViewer viewer("PointCloud");
     // KeyFrame * pCurKF;
     while (1)
     {
@@ -198,6 +199,7 @@ void PointCloudMapping::viewer()
         // gettimeofday(&finish,NULL);//初始化结束时间
         // double duration = finish.tv_sec - start.tv_sec + (finish.tv_usec - start.tv_usec)/1000000.0;//转换浮点型
         // std::cout<<"showCloud: "<<duration<<std::endl;
+	save();
     }
 }
 
@@ -206,7 +208,7 @@ void PointCloudMapping::save()
 {
     std::unique_lock<std::mutex> lck(mMutexGlobalMap);
     pcl::io::savePCDFile("result.pcd", *globalMap);
-    cout << "globalMap save finished" << endl;
+   // cout << "globalMap save finished" << endl;
 }
 void PointCloudMapping::updatecloud(Map &curMap)
 {

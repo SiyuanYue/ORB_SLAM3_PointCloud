@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.4.6)
 include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
-
+include_directories(/usr/include/pcl-1.8)
 rosbuild_init()
 
 IF(NOT ROS_BUILD_TYPE)
@@ -39,7 +39,7 @@ find_package(OpenCV 3.2)
 
 find_package(Eigen3 3.1.0 REQUIRED)
 find_package(Pangolin REQUIRED)
-
+find_package(PCL 1.8)
 include_directories(
 ${PROJECT_SOURCE_DIR}
 ${PROJECT_SOURCE_DIR}/../../../
@@ -47,7 +47,10 @@ ${PROJECT_SOURCE_DIR}/../../../include
 ${PROJECT_SOURCE_DIR}/../../../include/CameraModels
 ${PROJECT_SOURCE_DIR}/../../../Thirdparty/Sophus
 ${Pangolin_INCLUDE_DIRS}
+${PCL_INCLUDE_DIRS}
 )
+add_definitions(${PCL_DEFINITIONS})
+link_directories(${PCL_LIBRARY_DIRS})
 
 set(LIBS 
 ${OpenCV_LIBS} 
@@ -96,6 +99,7 @@ src/ros_rgbd.cc
 
 target_link_libraries(RGBD
 ${LIBS}
+${PCL_LIBRARIES}
 )
 
 # Node for monocular-inertial camera

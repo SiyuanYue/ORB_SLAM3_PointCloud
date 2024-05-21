@@ -33,12 +33,21 @@
 
 namespace ORB_SLAM3
 {
+class PointCloude
+{
+    using PointCloud = pcl::PointCloud<pcl::PointXYZRGB>;
+public:
+    PointCloud::Ptr pcE;
+    Eigen::Isometry3d T;
+    int pcID;
+
+};
 
 class PointCloudMapping
 {
 public:
-    // typedef pcl::PointXYZRGBA PointT;
-    // typedef pcl::PointCloud<PointT> PointCloud;
+    typedef pcl::PointXYZRGBA PointT;
+    typedef pcl::PointCloud<PointT> PointCloud;
 
     PointCloudMapping(double resolution_, double meank_, double thresh_);
     void save();
@@ -71,7 +80,7 @@ protected:
 
     condition_variable keyFrameUpdated;
     std::mutex mMutexGlobalMap;
-    // vector<PointCloude>     pointcloud;
+    vector<PointCloude>     pointcloud;
     // data to generate point clouds
     vector<KeyFrame *> keyframes;
     vector<cv::Mat> colorImgs;

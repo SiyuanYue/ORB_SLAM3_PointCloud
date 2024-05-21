@@ -34,6 +34,19 @@ Examples_old/Monocular/mono_euroc_old
 Examples_old/Monocular/mono_kitti_old
 Examples_old/Monocular/mono_tum_old
 Examples_old/Monocular/mono_tum_vi_old
+Examples_old/Monocular-Inertial/mono_inertial_euroc_old
+Examples_old/Monocular-Inertial/mono_inertial_tum_vi_old
+Examples_old/Monocular/mono_euroc_old
+Examples_old/Monocular/mono_kitti_old
+Examples_old/Monocular/mono_tum_old
+Examples_old/Monocular/mono_tum_vi_old
+Examples_old/RGB-D/rgbd_tum_old
+Examples_old/Stereo-Inertial/stereo_inertial_euroc_old
+Examples_old/Stereo-Inertial/stereo_inertial_tum_vi_old
+Examples_old/Stereo/stereo_euroc_old
+Examples_old/Stereo/stereo_kitti_old
+Examples_old/Stereo/stereo_tum_vi_old
+
 
 Examples_old/Stereo/stereo_euroc_old
 Examples_old/Stereo/stereo_kitti_old
@@ -76,3 +89,4 @@ cmake-build-debug/
 *.osa
 .vscode/settings.json
 .vscode/
+*.pcd
